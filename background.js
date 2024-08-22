@@ -1,6 +1,6 @@
 function getFormattedTimestamp() {
   const now = new Date();
-  return now.toISOString().replace('T', ' ').split('.')[0];
+  return now.toLocaleString();
 }
 
 chrome.action.onClicked.addListener((tab) => {

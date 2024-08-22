@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Auto Refresh",
+  "version": "1.0",
+  "description": "A Chrome extension that refreshes the page every 10 minutes.",
+  "permissions": [
+    "tabs",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_icon": "images/icon.png"
+  },
+  "icons": {
+    "128": "images/icon.png"
+  }
+}

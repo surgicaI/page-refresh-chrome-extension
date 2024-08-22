@@ -5,7 +5,7 @@
   "description": "A Chrome extension that refreshes the page every 10 minutes.",
   "permissions": [
     "tabs",
-    "activeTab"
+    "alarms"
   ],
   "background": {
     "service_worker": "background.js"

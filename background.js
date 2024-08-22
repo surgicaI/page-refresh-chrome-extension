@@ -1,9 +1,5 @@
-chrome.runtime.onInstalled.addListener(() => {
+chrome.action.onClicked.addListener((tab) => {
   setInterval(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0]) {
-        chrome.tabs.reload(tabs[0].id);
-      }
-    });
+    chrome.tabs.reload(tab.id);
   }, 10 * 60 * 1000); // 10 minutes in milliseconds
 });

@@ -21,6 +21,14 @@ function logger(message) {
     console.log(formattedMessage)
 }
 
+function status(numLogs = 10) {
+    // print the last numLogs logs
+    const logsToPrint = logs.slice(-numLogs)
+    logsToPrint.forEach((log) => {
+        console.log(log)
+    })
+}
+
 chrome.action.onClicked.addListener((tab) => {
     logger("Action button clicked.")
 

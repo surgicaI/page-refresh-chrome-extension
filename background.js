@@ -77,6 +77,8 @@ const alarmListener = (alarm) => {
         chrome.storage.local.get("activeTabIds", (result) => {
             const activeTabIds = result.activeTabIds || []
             const updatedTabIds = [] // to store the tab IDs that are still open
+            let pendingChecks = activeTabIds.length
+
             activeTabIds.forEach((activeTabId) => {
                 // Check if the tab is still open before reloading
                 chrome.tabs.get(activeTabId, (tab) => {
@@ -89,10 +91,16 @@ const alarmListener = (alarm) => {
                         chrome.tabs.reload(activeTabId)
                         updatedTabIds.push(activeTabId)
                     }
+
+                    pendingChecks--
+                    if (pendingChecks === 0) {
+                        // Update the active tab IDs in chrome.storage.local after all checks are done
+                        chrome.storage.local.set({
+                            activeTabIds: updatedTabIds,
+                        })
+                    }
                 })
             })
-            // Update the active tab IDs in chrome.storage.local
-            chrome.storage.local.set({ activeTabIds: updatedTabIds })
         })
     }
 }

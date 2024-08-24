@@ -1,8 +1,6 @@
 const REFRESH_ALARM = "refreshAlarm"
 
-// global variable to store last few logs
-const logs = []
-const MAX_LOGS = 50
+const MAX_LOGS = 10
 
 function getFormattedTimestamp() {
     const now = new Date()
@@ -10,22 +8,32 @@ function getFormattedTimestamp() {
 }
 
 function logger(message) {
-    let formattedMessage = `[${getFormattedTimestamp()}] ${message}`
+    // Retrieve the logs from chrome.storage.local
+    chrome.storage.local.get("logs", (result) => {
+        const logs = result.logs || []
+        let formattedMessage = `[${getFormattedTimestamp()}] ${message}`
 
-    // Add the message to the logs array while keeping its length to MAX_LOGS
-    if (logs.length >= MAX_LOGS) {
-        logs.shift()
-    }
-    logs.push(formattedMessage)
+        // Add the message to the logs array while keeping its length to MAX_LOGS
+        if (logs.length >= MAX_LOGS) {
+            logs.shift()
+        }
+        logs.push(formattedMessage)
 
-    console.log(formattedMessage)
+        // Store the updated logs in chrome.storage.local
+        chrome.storage.local.set({ logs: logs }, () => {
+            console.log(formattedMessage)
+        })
+    })
 }
 
 function status(numLogs = 10) {
-    // print the last numLogs logs
-    const logsToPrint = logs.slice(-numLogs)
-    logsToPrint.forEach((log) => {
-        console.log(log)
+    // Retrieve the logs from chrome.storage.local
+    chrome.storage.local.get("logs", (result) => {
+        const storedLogs = result.logs || []
+        const logsToPrint = storedLogs.slice(-numLogs)
+        logsToPrint.forEach((log) => {
+            console.log(log)
+        })
     })
 }
 

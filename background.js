@@ -1,6 +1,6 @@
 const REFRESH_ALARM = "refreshAlarm"
-
 const MAX_LOGS = 10
+const TIME_TO_RELOAD_MINS = 30
 
 function getFormattedTimestamp() {
     const now = new Date()
@@ -61,9 +61,13 @@ chrome.action.onClicked.addListener((tab) => {
         )
 
         if (!refreshAlarmExists) {
-            // Create the alarm, setting its period to 5 minutes (in milliseconds)
-            chrome.alarms.create(REFRESH_ALARM, { periodInMinutes: 5 })
-            logger('Alarm "refreshAlarm" created with a period of 5 minutes.')
+            // Create the alarm, setting its period to few minutes (in milliseconds)
+            chrome.alarms.create(REFRESH_ALARM, {
+                periodInMinutes: TIME_TO_RELOAD_MINS,
+            })
+            logger(
+                `Alarm "refreshAlarm" created with a period of ${TIME_TO_RELOAD_MINS} minutes.`
+            )
         } else {
             logger('Alarm "refreshAlarm" already exists.')
         }

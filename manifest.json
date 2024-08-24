@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Auto Refresh",
     "version": "1.0",
-    "description": "A Chrome extension that refreshes the page every 5 minutes.",
+    "description": "A Chrome extension that refreshes the page every few minutes.",
     "permissions": ["storage", "alarms", "tabs", "activeTab"],
     "background": {
         "service_worker": "background.js"

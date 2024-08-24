@@ -32,9 +32,11 @@ function status(numLogs = 10) {
 chrome.action.onClicked.addListener((tab) => {
     logger("Action button clicked.")
 
-    // Store the active tab's ID
+    // Store the active tab's ID in chrome.storage.local
     const activeTabId = tab.id
-    logger(`Active tab ID stored: ${activeTabId}`)
+    chrome.storage.local.set({ activeTabId: activeTabId }, () => {
+        logger(`Active tab ID stored: ${activeTabId}`)
+    })
 
     // Check if the alarm "refreshAlarm" already exists
     chrome.alarms.getAll((alarms) => {
@@ -50,24 +52,32 @@ chrome.action.onClicked.addListener((tab) => {
             logger('Alarm "refreshAlarm" already exists.')
         }
     })
-
-    const alarmListener = (alarm) => {
-        logger(`Alarm triggered: ${alarm.name}`)
-        if (alarm.name === REFRESH_ALARM) {
-            // Check if the tab is still open before reloading
-            chrome.tabs.get(activeTabId, (tab) => {
-                if (chrome.runtime.lastError) {
-                    logger(
-                        `Tab with ID ${activeTabId} is closed or does not exist. Removing listener.`
-                    )
-                    chrome.alarms.onAlarm.removeListener(alarmListener)
-                } else {
-                    logger(`Tab with ID ${activeTabId} reloaded.`)
-                    chrome.tabs.reload(activeTabId)
-                }
-            })
-        }
-    }
-
-    chrome.alarms.onAlarm.addListener(alarmListener)
 })
+
+const alarmListener = (alarm) => {
+    logger(`Alarm triggered: ${alarm.name}`)
+    if (alarm.name === REFRESH_ALARM) {
+        // Retrieve the active tab ID from chrome.storage.local
+        chrome.storage.local.get("activeTabId", (result) => {
+            const activeTabId = result.activeTabId
+            if (activeTabId !== undefined) {
+                // Check if the tab is still open before reloading
+                chrome.tabs.get(activeTabId, (tab) => {
+                    if (chrome.runtime.lastError) {
+                        logger(
+                            `Tab with ID ${activeTabId} is closed or does not exist. Removing tab ID from storage.`
+                        )
+                        chrome.storage.local.remove("activeTabId")
+                    } else {
+                        logger(`Tab with ID ${activeTabId} reloaded.`)
+                        chrome.tabs.reload(activeTabId)
+                    }
+                })
+            } else {
+                logger("No active tab ID found in storage.")
+            }
+        })
+    }
+}
+
+chrome.alarms.onAlarm.addListener(alarmListener)

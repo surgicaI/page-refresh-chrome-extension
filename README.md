@@ -2,7 +2,7 @@
 
 ## Description
 
-Auto Refresh is a simple Chrome extension that automatically refreshes the active tab every 10 minutes. This can be useful for keeping web pages up-to-date without manual intervention.
+Auto Refresh is a straightforward Chrome extension designed to automatically refresh the active tab at regular intervals. The refresh interval is currently hardcoded within the extension's code, but it can be customized by modifying the source code.
 
 ## Installation
 
@@ -30,13 +30,22 @@ Follow these steps to install the Auto Refresh extension in Chrome:
    - Click the "Load unpacked" button and select the directory where the extension files are located.
 
 6. **Verify Installation**:
-   - The Auto Refresh extension should now appear in your list of installed extensions. It will automatically refresh the active tab every 10 minutes.
+   - The Auto Refresh extension should now appear in your list of installed extensions. It will automatically refresh the active tab every few minutes.
 
 ## Files
 
 - `manifest.json`: Contains the metadata for the Chrome extension.
-- `background.js`: Contains the logic to refresh the active tab every 10 minutes.
+- `background.js`: Contains the logic to refresh the active tab every few minutes.
 - `images/icon.png`: The icon for the extension.
+
+## Debugging
+- Open the service worker console by navigating to `chrome://extensions/` and clicking on the "Inspect views: background page" link.
+- Examine the `activeTabIds` object in local storage by executing the following command in the service worker console:
+  ```javascript
+  chrome.storage.local.get({ activeTabIds: [] }, (result) => { console.log(result.activeTabIds); });
+  ```
+- Use the `status()` function, implemented in the `background.js` file, to print logs in the service worker console.
+- Keep the console open to monitor logs that appear each time the active tab is refreshed.
 
 ## License
 
